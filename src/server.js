@@ -4,33 +4,19 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const cors = require('cors');
 
-// Load Config
 dotenv.config();
-
-// Important: Load Passport Config
 require('./config/passport')(passport); 
-
 const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
-// Middleware
 app.use(express.json());
-app.use(cors()); // You might need to configure specific origins for production
-app.use(passport.initialize());
+app.use(cors());
 
-// Routes
-app.use('/api/auth', authRoutes);
-
-// Root Route (Optional: Good for checking if the server is running)
-app.get('/', (req, res) => {
-    res.send('API is running...');
-});
-
-// Database Connection
-// In serverless, we check if the connection exists to prevent multiple connections
+// --- THE DATABASE CONNECTION FUNCTION ---
 const connectDB = async () => {
     try {
+        // 0 = disconnected, 1 = connected, 2 = connecting
         if (mongoose.connection.readyState >= 1) {
             return;
         }
@@ -41,7 +27,22 @@ const connectDB = async () => {
     }
 };
 
-// Connect to DB immediately
-connectDB();
+// --- FIX: MIDDLEWARE TO WAIT FOR DB ---
+// This forces every request to wait until DB is connected before moving on
+app.use(async (req, res, next) => {
+    await connectDB();
+    next();
+});
+
+app.use(passport.initialize());
+
+// Routes
+app.use('/api/auth', authRoutes);
+
+app.get('/', (req, res) => {
+    res.send('API is running...');
+});
+
+
 
 module.exports = app;

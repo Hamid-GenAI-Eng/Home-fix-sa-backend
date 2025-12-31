@@ -92,5 +92,5 @@ exports.googleCallback = async (req, res) => {
 
     // Redirect to frontend (Change URL to your actual frontend)
     // We pass the token in the URL params
-    res.redirect(`http://localhost:3000/login/success?token=${token}`);
+    res.redirect(`https://home-fix-sa.vercel.app/login/success?token=${token}`);
 };
