@@ -90,6 +90,19 @@ exports.googleCallback = async (req, res) => {
     
     const token = generateToken(user._id);
 
+    // --- FIX STARTS HERE ---
+        // 1. Create the userData object explicitly
+        const userObj = {
+            _id: user._id,
+            name: `${user.firstName} ${user.lastName}`,
+            email: user.email,
+            // Add any other frontend requirements here
+        };
+
+        // 2. Stringify it so it can be passed in URL
+        const userData = JSON.stringify(userObj);
+        // --- FIX ENDS HERE ---
+
     // Redirect to frontend (Change URL to your actual frontend)
     // We pass the token in the URL params
     res.redirect(`https://home-fix-sa.vercel.app/login?token=${token}&user=${encodeURIComponent(userData)}`);
