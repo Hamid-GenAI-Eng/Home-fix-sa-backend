@@ -93,11 +93,10 @@ exports.googleCallback = async (req, res) => {
     // --- FIX STARTS HERE ---
         // 1. Create the userData object explicitly
         const userObj = {
-            _id: user._id,
-            name: `${user.firstName} ${user.lastName}`,
-            email: user.email,
-            // Add any other frontend requirements here
-        };
+    _id: user._id,
+    name: `${user.firstName} ${user.lastName || ''}`.trim(),
+    email: user.email,
+};
 
         // 2. Stringify it so it can be passed in URL
         const userData = JSON.stringify(userObj);
