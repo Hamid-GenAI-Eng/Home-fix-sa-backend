@@ -30,7 +30,7 @@ module.exports = function (passport) {
             const newUser = {
               googleId: profile.id,
               email: profile.emails[0].value,
-              firstName: profile.name.givenName,
+              firstName: profile.name.givenName || 'User',
               lastName: profile.name.familyName || '',
             };
             user = await User.create(newUser);
